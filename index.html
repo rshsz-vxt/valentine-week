@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Week ❤️</title>
+
+<style>
+:root{
+  --accent:#ff4d6d;
+  --card:rgba(255,255,255,0.15);
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Poppins,system-ui,sans-serif;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.hidden{display:none;}
+
+button{
+  border:none;
+  padding:12px 22px;
+  border-radius:30px;
+  background:linear-gradient(135deg,var(--accent),#ff758f);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:12px;
+}
+
+.card{
+  width:92vw;
+  max-width:420px;
+  background:var(--card);
+  backdrop-filter:blur(14px);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 25px 60px rgba(0,0,0,.4);
+  animation:fade .5s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1}
+}
+
+/* ===== MAIN LOGIN ===== */
+.login-page{
+  min-height:100vh;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+}
+.login-card{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  width:320px;
+  text-align:center;
+  color:#333;
+}
+.error{color:#ff4d6d;font-size:14px}
+
+/* ===== DAYS GRID ===== */
+.day-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.day{
+  padding:20px;
+  border-radius:22px;
+  background:rgba(255,255,255,.2);
+  text-align:center;
+  cursor:pointer;
+  position:relative;
+}
+
+.day.locked::after{
+  content:"🔒";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+}
+
+.timer{font-size:13px;margin-top:6px;opacity:.8}
+
+/* ===== MEDIA ===== */
+.media{
+  width:100%;
+  height:180px;
+  border-radius:18px;
+  background:rgba(255,255,255,.2);
+  margin-bottom:12px;
+}
+.media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:18px;
+}
+
+/* ===== GALLERY ===== */
+.gallery{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-bottom:10px;
+}
+.gallery img{
+  width:70px;
+  height:70px;
+  border-radius:12px;
+  object-fit:cover;
+  cursor:pointer;
+  opacity:.7;
+}
+.gallery img:hover{opacity:1}
+
+/* ===== VALENTINE ===== */
+.valentine-special{
+  background:radial-gradient(circle,#ff7aa2,#2b0f2f 70%);
+}
+.hearts{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.heart{
+  position:absolute;
+  bottom:-20px;
+  animation:float 6s linear infinite;
+}
+@keyframes float{
+  to{transform:translateY(-110vh);opacity:0}
+}
+
+.proposal{
+  margin-top:14px;
+  padding:16px;
+  border-radius:18px;
+  background:rgba(255,255,255,.2);
+  text-align:center;
+}
+.ring{
+  font-size:46px;
+  cursor:pointer;
+}
+.yes-btn{
+  margin-top:12px;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== MAIN LOGIN ===== -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <h2>Curated with Love ❤️</h2>
+    <p>By Riddhi — just for you</p>
+    <input id="mainUser" placeholder="Username">
+    <input id="mainPass" type="password" placeholder="Password">
+    <button onclick="mainLogin()">Unlock 💖</button>
+    <p id="loginError" class="error hidden">Wrong key 🥺</p>
+  </div>
+</div>
+
+<!-- ===== MAIN SITE ===== -->
+<div id="mainSite" class="hidden">
+
+<div class="card" id="loginCard">
+  <h2>Valentine Week 💕</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Enter</button>
+</div>
+
+<div class="card hidden" id="homeCard">
+  <h2>One Surprise Each Day ❤️</h2>
+  <div class="day-grid" id="dayGrid"></div>
+</div>
+
+<div class="card hidden" id="dayCard">
+  <h2 id="dayTitle"></h2>
+  <div class="hearts hidden" id="hearts"></div>
+
+  <div class="media">
+    <img id="mainImage">
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+
+  <p id="dayMsg"></p>
+
+  <audio controls>
+    <source id="audioSrc" type="audio/mpeg">
+  </audio>
+
+  <div class="proposal hidden" id="proposal">
+    <div class="ring">💍</div>
+    <h3>Forever?</h3>
+    <button class="yes-btn" onclick="sayYes()">Yes, Always 💖</button>
+    <p id="yesMessage" class="hidden">Forever begins ❤️</p>
+  </div>
+
+  <button onclick="goBack()">← Back</button>
+</div>
+
+</div>
+
+<script>
+/* ===== MAIN LOGIN ===== */
+const MAIN_USER="Sourjashree";
+const MAIN_PASS="MineForeverr<3";
+
+function mainLogin(){
+  if(mainUser.value===MAIN_USER && mainPass.value===MAIN_PASS){
+    loginPage.classList.add("hidden");
+    mainSite.classList.remove("hidden");
+  }else loginError.classList.remove("hidden");
+}
+
+/* ===== SECOND LOGIN ===== */
+const MASTER_USERNAME="Sourjashree";
+const MASTER_PASSWORD="Surprises4U";
+
+function login(){
+  if(username.value===MASTER_USERNAME && password.value===MASTER_PASSWORD){
+    loginCard.classList.add("hidden");
+    homeCard.classList.remove("hidden");
+    renderDays();
+  }else alert("Wrong credentials 💔");
+}
+
+/* ===== DAYS ===== */
+const days=[
+ {name:"Rose Day 🌹",date:"2026-02-07",password:"onlyforyou"},
+ {name:"Propose Day 💍",date:"2026-02-08",password:"foreverstarts"},
+ {name:"Chocolate Day 🍫",date:"2026-02-09",password:"sweetlikeyou"},
+ {name:"Teddy Day 🧸",date:"2026-02-10",password:"softlikeus"},
+ {name:"Promise Day 🤞",date:"2026-02-11",password:"foreveruandme"},
+ {name:"Hug Day 🤗",date:"2026-02-12",password:"safeinmyarms"},
+ {name:"Kiss Day 💋",date:"2026-02-13",password:"closertome"},
+ {name:"Valentine's Day ❤️",date:"2026-02-14",password:"usforever"}
+];
+
+const content = [
+  {
+    img: "images/rose1.jpg",
+    gallery: ["images/rose1.jpg","images/rose2.jpg","images/rose3.jpg"],
+    msg: `Like this rose, my love for you didn’t appear all at once.
+It grew slowly — through conversations, laughter, and quiet moments.
+Every day with you adds a new petal to something beautiful. 🌹
+This is just the start of our story <3.`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/propose1.jpg",
+    gallery: ["images/prop1.jpg","images/prop2.jpg","images/prop3.jpg"],
+    msg: `I don’t need a perfect moment to say this.
+I choose you — in happiness, in growth, in uncertainty and for everything else.
+You’re the person I want to build with, learn with, and stand beside.
+Today, I just want you to know my heart feels at home with you. 💍`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/choco1.jpg",
+    gallery: ["images/choco1.jpg","images/choco2.jpg"],
+    msg: `They say chocolate can fix a bad day,
+but somehow, you’ve been doing that effortlessly for a long time ;).
+Your presence adds sweetness to my life in ways I never expected.
+Thank you for being my most comfortable place. 🍫`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/teddy1.jpg",
+    gallery: ["images/teddy1.jpg","images/teddy2.jpg"],
+    msg: `This day is about comfort, and that’s exactly what you are to me.
+A place where I can be myself without fear.(Yet I fear you XD, JK!! ILYYY)
+A feeling of warmth even on the coldest days.
+If I could, I’d give you the longest hug right now. 🧸🤍`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/promise1.jpg",
+    gallery: ["images/prom1.jpg","images/prom2.jpg"],
+    msg: `I can’t promise perfection,
+but I promise honesty, effort, and respect.
+I promise to listen, to grow, and to stand by you —
+not only when it’s easy, but when it truly matters.
+This is my promise to you. 🤞`,
+    music: "music/promise.mp3"
+  },
+  {
+    img: "images/hug1.jpg",
+    gallery: ["images/hug1.jpg","images/hug2.jpg"],
+    msg: `Some hugs don’t need arms —they’re felt in understanding, patience, and care.
+This is one of those hugs.
+Whenever life feels overwhelming, remember there’s always a place where you are safe and valued. Go there whenever your heart and mind wants to <3. 🤗`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/kiss1.jpg",
+    gallery: ["images/kiss1.jpg","images/kiss2.jpg"],
+    msg: `This day isn’t just about a kiss.
+It’s about closeness — the kind that feels natural and reassuring.
+The kind where silence is comfortable, and moments feel complete.
+I love the intimacy of us kissing ;).(My FAVVV Ahhh <3 ;) )
+Being close to you feels right, in the simplest and truest way. 💋`,
+    music: "music/song2.mp3"
+  },
+  {
+    img: "images/val1.jpg",
+    gallery: ["images/valen1.jpg","images/valen2.jpg","images/valen3.jpg"],
+    msg: `Loving you isn’t a moment — it’s a feeling that quietly lives in everything I do.
+In the way I think about the future.
+In the way “home” now means more than just a place.
+
+You’ve become my calm in chaos,
+my favorite thought during the day,
+and the person I feel most myself with.
+
+I don’t just love you for who you are today —
+I love the way we grow, learn, and move forward together.
+If I get to choose you every day…
+then that’s all the forever I’ll ever need.
+You and me forever mi amor.
+Happy Valentine's Day Madmoiselle! ❤️`,
+    music: "music/song1.mp3"
+  }
+];
+
+function renderDays(){
+  dayGrid.innerHTML="";
+  const now=new Date();
+  days.forEach((d,i)=>{
+    const unlock=new Date(d.date+"T00:00");
+    const div=document.createElement("div");
+    div.className="day"+(now>=unlock?"":" locked");
+    div.innerHTML=`<h3>${d.name}</h3>`;
+    if(now<unlock){
+      const diff=unlock-now;
+      div.innerHTML+=`<div class="timer">Opens in ${Math.floor(diff/86400000)}d</div>`;
+      div.onclick=()=>alert("Patience love 💕");
+    }else{
+      div.onclick=()=>openDay(i);
+    }
+    dayGrid.appendChild(div);
+  });
+}
+
+function openDay(i){
+  if(prompt("Password?")!==days[i].password) return alert("Not quite 😘");
+  homeCard.classList.add("hidden");
+  dayCard.classList.remove("hidden");
+  dayTitle.textContent=days[i].name;
+  mainImage.src=content[i].img;
+  dayMsg.textContent=content[i].msg;
+  audioSrc.src=content[i].music;
+  audioSrc.parentElement.load();
+
+  gallery.innerHTML="";
+  content[i].gallery.forEach(src=>{
+    const im=document.createElement("img");
+    im.src=src;
+    im.onclick=()=>mainImage.src=src;
+    gallery.appendChild(im);
+  });
+
+  if(i===7){
+    proposal.classList.remove("hidden");
+    dayCard.classList.add("valentine-special");
+    spawnHearts();
+  }
+}
+
+function goBack(){
+  dayCard.classList.add("hidden");
+  proposal.classList.add("hidden");
+  dayCard.classList.remove("valentine-special");
+  homeCard.classList.remove("hidden");
+}
+
+function spawnHearts(){
+  hearts.classList.remove("hidden");
+  hearts.innerHTML="";
+  for(let i=0;i<30;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.textContent="❤️";
+    h.style.left=Math.random()*100+"%";
+    hearts.appendChild(h);
+  }
+}
+
+let ringClicks=0;
+document.addEventListener("click",e=>{
+  if(e.target.classList.contains("ring")){
+    ringClicks++;
+    if(ringClicks===21) alert("💍 Forever unlocked ❤️");
+  }
+});
+
+function sayYes(){
+  yesMessage.classList.remove("hidden");
+  spawnHearts();
+}
+</script>
+
+</body>
+</html>
